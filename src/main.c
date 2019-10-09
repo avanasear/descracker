@@ -53,20 +53,11 @@ void * print_thread(void * inputs){
 int main(const int argc, const char ** argv){
 	/* Main function. Arg handling, function calling, etc. */
 
+	printf("%d; %s\n", argc, argv[0]); // just to remove 'unused variable's
+
 	int i, rc;
 	pthread_t threads[NPROCS];
 	long long unsigned * keyspace = find_keyspaces();
-
-	/*
-	// Print the keyspace for some of the threads
-	printf("Thread 0 using keyspace: %llu::%llu\n", keyspace[0], keyspace[1]-1);
-	printf("Thread 1 using keyspace: %llu::%llu\n", keyspace[1], keyspace[2]-1);
-	printf("Thread 2 using keyspace: %llu::%llu\n", keyspace[2], keyspace[3]-1);
-	printf("Thread 3 using keyspace: %llu::%llu\n", keyspace[3], keyspace[4]-1);
-	printf("Thread 4 using keyspace: %llu::%llu\n", keyspace[4], keyspace[5]-1);
-	printf("Thread 5 using keyspace: %llu::%llu\n", keyspace[5], keyspace[6]-1);
-	printf("Thread 6 using keyspace: %llu::%llu\n", keyspace[6], keyspace[7]-1);
-	printf("Thread 7 using keyspace: %llu::72057594037927936\n\n", keyspace[7]); */
 
 	// Create all our threads and give them their keyspaces.
 	struct thread_args *args;
