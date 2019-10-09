@@ -1,11 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <pthread.h>
 #include <sys/sysinfo.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <crypt.h>
+#include <crypt.h>       // not in use yet but eventually
 #include <math.h>
 
 /* cryptlib's usage restrictions require that we credit Peter Gutmann
