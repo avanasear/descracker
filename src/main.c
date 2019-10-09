@@ -2,12 +2,25 @@
 #include <stdlib.h>
 #include <pthread.h>
 #include <sys/sysinfo.h>
-#include <crypt.h>       // not in use yet but eventually
+#include <openssl/crypto.h> // not used yet but will be soon
 #include <math.h>
 
-/* cryptlib's usage restrictions require that we credit Peter Gutmann
-   if we decide to make this public after we finish. I don't know SHIT
-   about licensing, so I guess we'll need to figure that out later.    */
+/* Gonna put some notes right here...
+
+   DES_ecb_encrypt() is the basic DES encryption routine that encrypts or
+   decrypts a single 8-byte DES_cblock in electronic code book (ECB) mode.
+   It always transforms the input data, pointed to by input, into the output
+   data, pointed to by the output argument. If the encrypt argument is
+   non-zero (DES_ENCRYPT), the input (cleartext) is encrypted in to the
+   output (ciphertext) using the key_schedule specified by the schedule
+   argument, previously set via DES_set_key. If encrypt is zero
+   (DES_DECRYPT), the input (now ciphertext) is decrypted into the output
+   (now cleartext). Input and output may overlap. DES_ecb_encrypt() does not
+   return a value. (https://www.openssl.org/docs/man1.0.2/man3/des.html)
+
+   That site includes more information about it - need to set key/schedule/etc
+
+*/
 
 // make sure we use every available processor
 #define NPROCS get_nprocs()
