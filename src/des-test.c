@@ -32,6 +32,11 @@ int main(){
 	print_data(enc_out, 8);
 	printf("Decrypted: \n");
 	print_data(dec_out, 8);
+
+	printf("Writing our encrypted data to the `encrypted.txt` file...\n");
+	FILE * fptr = fopen("encrypted.txt", "w");
+	fwrite(&enc_out, 1, 8, fptr);
+	fclose(fptr);
 }
 
 void print_data(const void * data, int len){
