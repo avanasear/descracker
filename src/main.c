@@ -1,8 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <pthread.h>
+#include <string.h>
 #include <sys/sysinfo.h>
-#include <openssl/crypto.h> // not used yet but will be soon
+#include <openssl/des.h>
 #include <math.h>
 
 /* Gonna put some notes right here...
@@ -25,10 +27,14 @@
 // make sure we use every available processor
 #define NPROCS get_nprocs()
 
+unsigned short found_a_key = 0;
+const_DES_cblock plaintext = {0x6c,0x6f,0x6c,0x6c,0x6f,0x73,0x65,0x72};
+
 struct thread_args {
 	// keyspace arguments to pass into a thread
 	long long unsigned start;
 	long long unsigned end;
+	const_DES_cblock cipher;
 };
 
 long long unsigned * find_keyspaces(void){
@@ -45,7 +51,11 @@ long long unsigned * find_keyspaces(void){
 	return keyspace;
 }
 
-void * print_thread(void * inputs){
+void llu_to_des_key(int llu_int, const_DES_cblock key){
+	// idk how to do this yet
+}
+
+void * decrypt_thread(void * inputs){
 	/* Test function to see if threads are properly created.
 	   I'm not a great programmer; don't judge me. */
 
@@ -53,12 +63,33 @@ void * print_thread(void * inputs){
 	struct thread_args * space = inputs;
 	long long unsigned start = space->start;
 	long long unsigned end = space->end;
+	const_DES_cblock des_input[8];
+	memcpy(des_input, space->cipher, 8);
+	DES_cblock dec_out[sizeof(des_input)];
+	const_DES_cblock key_candidate = {0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
+
+	DES_key_schedule key_sched;
 
 	// Print every key % a billion (save some cycles by using mod)
 	long long unsigned i;
 	for (i=start; i<end; i++){
-		if (i % 1000000000 == 0){
-			printf("%llu\n", i);
+		if (found_a_key == 0){
+			// attempt to decrypt
+			llu_to_des_key(i, key_candidate);
+			DES_set_key_unchecked(&key_candidate, &key_sched);
+			DES_ecb_encrypt(des_input, dec_out, &key_sched, DES_DECRYPT);
+
+			// if we found a key, tell all the other processes to stop
+			/*if (dec_out == plain_text){
+				found_a_key=1;
+				break;
+			}
+			else {
+				continue;
+			}*/
+		}
+		else {
+			break;
 		}
 	}
 }
@@ -72,14 +103,25 @@ int main(const int argc, const char ** argv){
 	pthread_t threads[NPROCS];
 	long long unsigned * keyspace = find_keyspaces();
 
+	// open "encrypted.txt" to read 8 bytes into our buffer
+	FILE * fptr = fopen("encrypted.txt", "r");
+	const_DES_cblock ciphertext[8];
+	for (i=0; i<8; i++){
+		if (!fscanf(fptr, "%c", ciphertext[i])){
+			printf("Error reading file.\n");
+			exit(1);
+		}
+	}
+
 	// Create all our threads and give them their keyspaces.
 	struct thread_args *args;
 	for (i=0; i<NPROCS; i++){
 		args = malloc(sizeof(struct thread_args));
 		args->start = keyspace[i];
 		args->end = keyspace[i] + keyspace[1];
+		memcpy(args->cipher, ciphertext, 8);
 		// keyspace[1] will always be the same size as one broken-up keyspace
-		rc = pthread_create(&threads[i], NULL, print_thread, args);
+		rc = pthread_create(&threads[i], NULL, decrypt_thread, args);
 		if (rc) {
 			printf("Error - pthread_create() returned %d\n", rc);
 			exit(1);
