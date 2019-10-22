@@ -4,116 +4,40 @@
 #include <string.h>
 #include <stddef.h>
 
-#define BYTE_TO_BINARY(llu)  \
-  (llu & 0x800000000000000000000 ? '1' : '0'), \
-  (llu & 0x400000000000000000000 ? '1' : '0'), \
-  (llu & 0x200000000000000000000 ? '1' : '0'), \
-  (llu & 0x100000000000000000000 ? '1' : '0'), \
-  (llu & 0x80000000000000000000 ? '1' : '0'), \
-  (llu & 0x40000000000000000000 ? '1' : '0'), \
-  (llu & 0x20000000000000000000 ? '1' : '0'), \
-  (llu & 0x10000000000000000000 ? '1' : '0'), \
-  (llu & 0x8000000000000000000 ? '1' : '0'), \
-  (llu & 0x4000000000000000000 ? '1' : '0'), \
-  (llu & 0x2000000000000000000 ? '1' : '0'), \
-  (llu & 0x1000000000000000000 ? '1' : '0'), \
-  (llu & 0x800000000000000000 ? '1' : '0'), \
-  (llu & 0x400000000000000000 ? '1' : '0'), \
-  (llu & 0x200000000000000000 ? '1' : '0'), \
-  (llu & 0x100000000000000000 ? '1' : '0'), \
-  (llu & 0x80000000000000000 ? '1' : '0'), \
-  (llu & 0x40000000000000000 ? '1' : '0'), \
-  (llu & 0x20000000000000000 ? '1' : '0'), \
-  (llu & 0x10000000000000000 ? '1' : '0'), \
-  (llu & 0x8000000000000000 ? '1' : '0'), \
-  (llu & 0x4000000000000000 ? '1' : '0'), \
-  (llu & 0x2000000000000000 ? '1' : '0'), \
-  (llu & 0x1000000000000000 ? '1' : '0'), \
-  (llu & 0x800000000000000 ? '1' : '0'), \
-  (llu & 0x400000000000000 ? '1' : '0'), \
-  (llu & 0x200000000000000 ? '1' : '0'), \
-  (llu & 0x100000000000000 ? '1' : '0'), \
-  (llu & 0x80000000000000 ? '1' : '0'), \
-  (llu & 0x40000000000000 ? '1' : '0'), \
-  (llu & 0x20000000000000 ? '1' : '0'), \
-  (llu & 0x10000000000000 ? '1' : '0'), \
-  (llu & 0x8000000000000 ? '1' : '0'), \
-  (llu & 0x4000000000000 ? '1' : '0'), \
-  (llu & 0x2000000000000 ? '1' : '0'), \
-  (llu & 0x1000000000000 ? '1' : '0'), \
-  (llu & 0x800000000000 ? '1' : '0'), \
-  (llu & 0x400000000000 ? '1' : '0'), \
-  (llu & 0x200000000000 ? '1' : '0'), \
-  (llu & 0x100000000000 ? '1' : '0'), \
-  (llu & 0x80000000000 ? '1' : '0'), \
-  (llu & 0x40000000000 ? '1' : '0'), \
-  (llu & 0x20000000000 ? '1' : '0'), \
-  (llu & 0x10000000000 ? '1' : '0'), \
-  (llu & 0x8000000000 ? '1' : '0'), \
-  (llu & 0x4000000000 ? '1' : '0'), \
-  (llu & 0x2000000000 ? '1' : '0'), \
-  (llu & 0x1000000000 ? '1' : '0'), \
-  (llu & 0x800000000 ? '1' : '0'), \
-  (llu & 0x400000000 ? '1' : '0'), \
-  (llu & 0x200000000 ? '1' : '0'), \
-  (llu & 0x100000000 ? '1' : '0'), \
-  (llu & 0x80000000 ? '1' : '0'), \
-  (llu & 0x40000000 ? '1' : '0'), \
-  (llu & 0x20000000 ? '1' : '0'), \
-  (llu & 0x10000000 ? '1' : '0'), \
-  (llu & 0x8000000 ? '1' : '0'), \
-  (llu & 0x4000000 ? '1' : '0'), \
-  (llu & 0x2000000 ? '1' : '0'), \
-  (llu & 0x1000000 ? '1' : '0'), \
-  (llu & 0x800000 ? '1' : '0'), \
-  (llu & 0x400000 ? '1' : '0'), \
-  (llu & 0x200000 ? '1' : '0'), \
-  (llu & 0x100000 ? '1' : '0'), \
-  (llu & 0x80000 ? '1' : '0'), \
-  (llu & 0x40000 ? '1' : '0'), \
-  (llu & 0x20000 ? '1' : '0'), \
-  (llu & 0x10000 ? '1' : '0'), \
-  (llu & 0x8000 ? '1' : '0'), \
-  (llu & 0x4000 ? '1' : '0'), \
-  (llu & 0x2000 ? '1' : '0'), \
-  (llu & 0x1000 ? '1' : '0'), \
-  (llu & 0x800 ? '1' : '0'), \
-  (llu & 0x400 ? '1' : '0'), \
-  (llu & 0x200 ? '1' : '0'), \
-  (llu & 0x100 ? '1' : '0'), \
-  (llu & 0x80 ? '1' : '0'), \
-  (llu & 0x40 ? '1' : '0'), \
-  (llu & 0x20 ? '1' : '0'), \
-  (llu & 0x10 ? '1' : '0'), \
-  (llu & 0x08 ? '1' : '0'), \
-  (llu & 0x04 ? '1' : '0'), \
-  (llu & 0x02 ? '1' : '0'), \
-  (llu & 0x01 ? '1' : '0')
-
-long long unsigned insert_bits(long long unsigned key_ind);
-int llu_to_binary(long long unsigned llu);
+void insert_bits(long long unsigned key_ind);
 
 int main(void){
-	long long unsigned key = 72057594037927936ULL;
-	llu_to_binary(key);
+	long long unsigned keynum = 72057594037927935ULL;
+	printf("KeyNum: %llu\n", keynum);
+	printf("Shifted: ");
+	insert_bits(keynum);
 
+	printf("\n");
 	return 0;
 }
 
-long long unsigned insert_bits(long long unsigned key_ind){
-	long long unsigned x = key_ind;
-	long long unsigned y = x;
-	x <<= 1;
-	x &= -(((long long unsigned) 1) << 8);
-	x &= ((-((long long unsigned) 0)) << 8);
-	y &= -((-((long long unsigned) 0)) << 8);
-	x |= y;
+void insert_bits(long long unsigned key_ind){
+	long long unsigned arr[8];
 
-	return x;
-}
+	/* Note that this doesn't necessarily need to be an array,
+	   but doing it this way makes it transfer more easily to
+	   doing it with a DES cblock.                            */
 
-int llu_to_binary(long long unsigned item){
-	printf("%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c", BYTE_TO_BINARY(item));
+	arr[0] = ((key_ind >> 49)       ) | 0x80;
+	arr[1] = ((key_ind >> 42) & 0x7f) | 0x80;
+	arr[2] = ((key_ind >> 35) & 0x7f) | 0x80;
+	arr[3] = ((key_ind >> 28) & 0x7f) | 0x80;
+	arr[4] = ((key_ind >> 21) & 0x7f) | 0x80;
+	arr[5] = ((key_ind >> 14) & 0x7f) | 0x80;
+	arr[6] = ((key_ind >>  7) & 0x7f) | 0x80;
+	arr[7] = ((key_ind      ) & 0x7f) | 0x80;
 
-	return 0;
+	printf("%02llx ", arr[0]);
+	printf("%02llx ", arr[1]);
+	printf("%02llx ", arr[2]);
+	printf("%02llx ", arr[3]);
+	printf("%02llx ", arr[4]);
+	printf("%02llx ", arr[5]);
+	printf("%02llx ", arr[6]);
+	printf("%02llx ", arr[7]);
 }
