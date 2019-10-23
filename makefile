@@ -16,3 +16,6 @@ uninstall: /usr/bin/descracker /usr/bin/create-crypt-file
 clean: descracker create-crypt-file
 	rm descracker
 	rm create-crypt-file
+	rm plaintext.txt
+	rm ciphertext.txt
+
