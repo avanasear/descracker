@@ -11,7 +11,9 @@
 #define NPROCS get_nprocs()
 
 unsigned short found_a_key = 0;
-const_DES_cblock plaintext = {0x6c,0x6f,0x6c,0x6c,0x6f,0x73,0x65,0x72};
+//const_DES_cblock plaintext = {0x6c,0x6f,0x6c,0x6c,0x6f,0x73,0x65,0x72};
+DES_cblock plaintext[8];
+char * HELP = "Syntax: descracker <ciphertext file> <plaintext file>";
 
 struct thread_args {
 	// keyspace arguments to pass into a thread
@@ -29,16 +31,44 @@ void print_plain(const void * data, int len);
 int main(const int argc, const char ** argv){
 	// Main function. Arg handling, function calling, etc.
 
-	printf("%d; %s\n", argc, argv[0]); // just to remove 'unused variable's
+	const_DES_cblock ciphertext[8];
+	if ((argc == 2) && (!(strcmp(argv[1], "--help"))
+					|| (!(strcmp(argv[1], "-h"))))){
+		printf("%s\n", HELP);
+		exit(0);
+	}
+	else if (argc == 3){
+		// open the files specified and get the data ready to use
+		FILE * cptr;
+		if ((cptr = fopen(argv[1], "r"))){
+			fread(ciphertext, sizeof(unsigned char), 8, cptr);
+			fclose(cptr);
+			printf("Attempting to decrypt: ");
+			print_data(ciphertext, 8);
+		}
+		else {
+			printf("Couldn't open file: %s\n", argv[1]);
+			exit(1);
+		}
+
+		FILE * pptr;
+		if ((pptr = fopen(argv[2], "r"))){
+			fread(plaintext, sizeof(unsigned char), 8, pptr);
+			fclose(pptr);
+		}
+		else {
+			printf("Couldn't open file: %s\n", argv[2]);
+			exit(1);
+		}
+	}
+	else {
+		printf("Incorrect arguments.\n%s\n", HELP);
+		exit(1);
+	}
 
 	int i, rc;
 	pthread_t threads[NPROCS];
 	long long unsigned * keyspace = find_keyspaces();
-
-	// open "encrypted.txt" to read 8 bytes into our buffer
-	FILE * fptr = fopen("encrypted.txt", "r");
-	const_DES_cblock ciphertext[8];
-	fread(ciphertext, sizeof(unsigned char), 8, fptr);
 
 	// Create all our threads and give them their keyspaces.
 	struct thread_args *args;
@@ -62,6 +92,11 @@ int main(const int argc, const char ** argv){
 
 	free(keyspace);
 	free(args);
+
+	if (found_a_key == 0){
+		printf("Unable to find a working key.\n");
+		printf("Maybe the ciphertext and plaintext don't correlate?\n");
+	}
 
 	return 0;
 }
