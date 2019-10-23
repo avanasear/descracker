@@ -12,3 +12,7 @@ install: descracker create-crypt-file
 uninstall: /usr/bin/descracker /usr/bin/create-crypt-file
 	rm -f /usr/bin/descracker
 	rm -f /usr/bin/create-crypt-file
+
+clean: descracker create-crypt-file
+	rm descracker
+	rm create-crypt-file
