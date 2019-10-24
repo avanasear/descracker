@@ -1,5 +1,7 @@
 src/*.o
 src/*.out
 src/*.txt
-./descracker
-./create-crypt-file
+descracker
+create-crypt-file
+ciphertext.txt
+plaintext.txt
