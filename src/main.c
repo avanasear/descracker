@@ -70,7 +70,7 @@ int main(const int argc, const char ** argv){
 	long long unsigned * keyspace = find_keyspaces();
 
 	// Create all our threads and give them their keyspaces.
-	struct thread_args *args;
+	struct thread_args *args = {0};
 	for (i=0; i<NPROCS; i++){
 		args = malloc(sizeof(struct thread_args));
 		args->start = keyspace[i];
