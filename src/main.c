@@ -10,7 +10,6 @@
 #define NPROCS get_nprocs()
 
 unsigned short found_a_key = 0;
-//const_DES_cblock plaintext = {0x6c,0x6f,0x6c,0x6c,0x6f,0x73,0x65,0x72};
 DES_cblock plaintext[8];
 char * HELP = "Syntax: descracker <ciphertext file> <plaintext file>";
 
@@ -115,7 +114,7 @@ long long unsigned * find_keyspaces(void){
 }
 
 void * decrypt_thread(void * inputs){
-	// Attempt to decrypt the ciphertext.
+	// Attempt to decrypt the ciphertext
 
 	// Get our needed variables from the function inputs
 	struct thread_args * space = inputs;
@@ -127,7 +126,6 @@ void * decrypt_thread(void * inputs){
 	DES_cblock dec_out[8];
 	DES_key_schedule key_sched;
 
-	// Print every key % a billion (save some cycles by using mod)
 	long long unsigned i;
 	for (i=start; i<end; i++){
 		if (found_a_key == 0){
